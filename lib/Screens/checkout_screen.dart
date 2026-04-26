@@ -119,6 +119,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       : () async {
                           try {
                             setState(() => isLoading = true);
+
+                            // validation
+                            // firebase save
+
                             setState(() => isLoading = false);
                             if (nameController.text.isEmpty ||
                                 addressController.text.isEmpty ||

@@ -568,7 +568,7 @@ class ProfileScreen extends StatelessWidget {
 
             // 🧑 NAME
             Text(
-              user?.displayName ?? "User",
+              user?.displayName ?? user?.email?.split('@')[0] ?? "User",
               style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
 
