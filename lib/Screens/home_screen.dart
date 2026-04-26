@@ -355,16 +355,27 @@ class _CartScreenState extends State<CartScreen> {
                           child: Row(
                             children: [
                               // IMAGE
-                              Container(
+                              SizedBox(
                                 width: 60,
                                 height: 60,
-                                decoration: BoxDecoration(
-                                  color: Colors.grey[300],
-                                  borderRadius: BorderRadius.circular(10),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey[300],
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(10),
+                                    child: Image.network(
+                                      item.image, // ✅ THIS WAS MISSING
+                                      fit: BoxFit.cover,
+                                      errorBuilder:
+                                          (context, error, stackTrace) {
+                                            return const Icon(Icons.image);
+                                          },
+                                    ),
+                                  ),
                                 ),
-                                child: const Icon(Icons.image, size: 50),
                               ),
-
                               const SizedBox(width: 10),
 
                               // NAME + PRICE

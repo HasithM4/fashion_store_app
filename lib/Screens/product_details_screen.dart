@@ -66,7 +66,7 @@ class ProductDetailsScreen extends StatelessWidget {
                     CartItem(
                       name: name,
                       price: double.parse(price.replaceAll("\$", "")),
-                      image: '',
+                      image: image,
                     ),
                   );
 
