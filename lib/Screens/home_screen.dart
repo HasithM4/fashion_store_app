@@ -200,9 +200,9 @@ class _HomeContentState extends State<HomeContent> {
                       onTap: () => setState(() => selectedCategory = "Kids"),
                     ),
                     CategoryItem(
-                      title: "Accessories",
+                      title: "Personal Care",
                       onTap: () =>
-                          setState(() => selectedCategory = "Accessories"),
+                          setState(() => selectedCategory = "Personal Care"),
                     ),
                   ],
                 ),
@@ -272,12 +272,27 @@ class CategoryItem extends StatelessWidget {
   final VoidCallback onTap;
 
   const CategoryItem({super.key, required this.title, required this.onTap});
+  String getCategoryEmoji(String title) {
+    switch (title) {
+      case "Men":
+        return "👨";
+      case "Women":
+        return "👩";
+      case "Kids":
+        return "🧒";
+      case "Personal Care":
+        return "🧴";
+      case "All":
+        return "🛍️";
+      default:
+        return "📦";
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      // 👈 ADD THIS
-      onTap: onTap, // 👈 ADD THIS
+      onTap: onTap,
       child: Container(
         width: 90,
         margin: const EdgeInsets.only(right: 12),
@@ -289,9 +304,25 @@ class CategoryItem extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.category, color: Colors.pink),
-            const SizedBox(height: 5),
-            Text(title),
+            // 🔵 Emoji circle
+            CircleAvatar(
+              radius: 22,
+              backgroundColor: Colors.pink.withOpacity(0.1),
+              child: Text(
+                getCategoryEmoji(title),
+                style: const TextStyle(fontSize: 20),
+              ),
+            ),
+            const SizedBox(height: 6),
+            // 🏷️ Text
+            Text(
+              title,
+              style: const TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+              ),
+              textAlign: TextAlign.center,
+            ),
           ],
         ),
       ),
