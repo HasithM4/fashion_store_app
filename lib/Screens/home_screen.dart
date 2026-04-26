@@ -7,6 +7,46 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'login_screen.dart';
 import 'order_history_screen.dart';
 
+class SectionTitle extends StatelessWidget {
+  final String title;
+  final String actionText;
+  final VoidCallback? onTap;
+
+  const SectionTitle({
+    super.key,
+    required this.title,
+    this.actionText = "See all",
+    this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          title,
+          style: const TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 0.5,
+          ),
+        ),
+        GestureDetector(
+          onTap: onTap,
+          child: Text(
+            actionText,
+            style: const TextStyle(
+              color: Colors.pink,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -75,11 +115,29 @@ class _HomeContentState extends State<HomeContent> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Ware Aware"),
+        backgroundColor: Colors.white,
+        elevation: 0,
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: const [
+            Text(
+              "Hello 👋",
+              style: TextStyle(fontSize: 14, color: Colors.grey),
+            ),
+            Text(
+              "Ware Aware",
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
+            ),
+          ],
+        ),
         actions: const [
           Padding(
             padding: EdgeInsets.only(right: 16),
-            child: Icon(Icons.notifications_none),
+            child: Icon(Icons.notifications_none, color: Colors.black),
           ),
         ],
       ),
@@ -111,9 +169,11 @@ class _HomeContentState extends State<HomeContent> {
               const SizedBox(height: 20),
 
               // 🧥 CATEGORIES
-              const Text(
-                "Categories",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              SectionTitle(
+                title: "Categories",
+                onTap: () {
+                  // optional: navigate to full category screen
+                },
               ),
 
               const SizedBox(height: 10),
@@ -135,6 +195,15 @@ class _HomeContentState extends State<HomeContent> {
                       title: "Women",
                       onTap: () => setState(() => selectedCategory = "Women"),
                     ),
+                    CategoryItem(
+                      title: "Kids",
+                      onTap: () => setState(() => selectedCategory = "Kids"),
+                    ),
+                    CategoryItem(
+                      title: "Accessories",
+                      onTap: () =>
+                          setState(() => selectedCategory = "Accessories"),
+                    ),
                   ],
                 ),
               ),
@@ -142,11 +211,12 @@ class _HomeContentState extends State<HomeContent> {
               const SizedBox(height: 20),
 
               // ⭐ FEATURED
-              const Text(
-                "Featured",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              SectionTitle(
+                title: "Featured",
+                onTap: () {
+                  // optional: show all products
+                },
               ),
-
               const SizedBox(height: 10),
 
               StreamBuilder<QuerySnapshot>(
