@@ -5,6 +5,7 @@ import 'checkout_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'login_screen.dart';
+import 'order_history_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -584,9 +585,13 @@ class ProfileScreen extends StatelessWidget {
             ProfileItem(
               icon: Icons.shopping_bag,
               title: "My Orders",
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const OrderHistoryScreen()),
+                );
+              },
             ),
-
             ProfileItem(
               icon: Icons.location_on,
               title: "Address",
