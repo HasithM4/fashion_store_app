@@ -92,7 +92,7 @@ lib/
 
 ## 🎯 Future Improvements
 
-* Payment integration (Stripe / PayPal)
+* Payment integration
 * Product search & filters
 * Wishlist feature
 * Admin panel
