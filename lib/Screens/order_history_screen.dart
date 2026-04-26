@@ -20,10 +20,13 @@ class OrderHistoryScreen extends StatelessWidget {
         stream: FirebaseFirestore.instance
             .collection('orders')
             .where('userId', isEqualTo: user.uid)
-            .orderBy('createdAt', descending: true)
             .snapshots(),
 
         builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Center(child: Text("Error: ${snapshot.error}"));
+          }
+
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
@@ -73,7 +76,7 @@ class OrderHistoryScreen extends StatelessWidget {
 
                       // 🛒 ITEMS
                       Column(
-                        children: items.map((item) {
+                        children: items.take(3).map((item) {
                           return ListTile(
                             contentPadding: EdgeInsets.zero,
                             leading: ClipRRect(
@@ -83,7 +86,7 @@ class OrderHistoryScreen extends StatelessWidget {
                                 width: 50,
                                 height: 50,
                                 fit: BoxFit.cover,
-                                errorBuilder: (_, __, ___) =>
+                                errorBuilder: (_, _, _) =>
                                     const Icon(Icons.image),
                               ),
                             ),
