@@ -17,6 +17,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   final addressController = TextEditingController();
   final phoneController = TextEditingController();
 
+  bool isLoading = false; // ✅ ADD THIS HERE
+
   @override
   void dispose() {
     nameController.dispose();
@@ -112,92 +114,102 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 width: double.infinity,
                 height: 50,
                 child: ElevatedButton(
-                  onPressed: () async {
-                    try {
-                      // ✅ ADD VALIDATION HERE
-                      if (nameController.text.isEmpty ||
-                          addressController.text.isEmpty ||
-                          phoneController.text.isEmpty) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text("Please fill all fields"),
-                          ),
-                        );
-                        return;
-                      }
+                  onPressed: isLoading
+                      ? null
+                      : () async {
+                          try {
+                            setState(() => isLoading = true);
+                            setState(() => isLoading = false);
+                            if (nameController.text.isEmpty ||
+                                addressController.text.isEmpty ||
+                                phoneController.text.isEmpty) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text("Please fill all fields"),
+                                ),
+                              );
+                              return;
+                            }
 
-                      final user = FirebaseAuth.instance.currentUser;
+                            final user = FirebaseAuth.instance.currentUser;
 
-                      if (user == null) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text("Please login first")),
-                        );
-                        return;
-                      }
-                      // 🛒 Prepare cart items
-                      final items = CartService.cartItems
-                          .map(
-                            (item) => {
-                              "name": item.name,
-                              "price": item.price,
-                              "quantity": item.quantity,
-                              "image": item.image,
-                            },
-                          )
-                          .toList();
+                            if (user == null) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text("Please login first"),
+                                ),
+                              );
+                              return;
+                            }
+                            // 🛒 Prepare cart items
+                            final items = CartService.cartItems
+                                .map(
+                                  (item) => {
+                                    "name": item.name,
+                                    "price": item.price,
+                                    "quantity": item.quantity,
+                                    "image": item.image,
+                                  },
+                                )
+                                .toList();
 
-                      // ☁️ Save to Firestore
-                      await FirebaseFirestore.instance
-                          .collection('orders')
-                          .add({
-                            "userId": user.uid,
-                            "fullName": nameController.text,
-                            "address": addressController.text,
-                            "phone": phoneController.text,
-                            "items": items,
-                            "total": widget.total,
-                            "createdAt": Timestamp.now(),
-                          });
+                            // ☁️ Save to Firestore
+                            await FirebaseFirestore.instance
+                                .collection('orders')
+                                .add({
+                                  "userId": user.uid,
+                                  "fullName": nameController.text,
+                                  "address": addressController.text,
+                                  "phone": phoneController.text,
+                                  "items": items,
+                                  "total": widget.total,
+                                  "createdAt": Timestamp.now(),
+                                });
 
-                      CartService.clearCart();
+                            CartService.clearCart();
 
-                      if (!context.mounted) return;
+                            if (!context.mounted) return;
 
-                      showDialog(
-                        context: context,
-                        builder: (context) => AlertDialog(
-                          title: const Text("Success"),
-                          content: const Text("Order placed successfully!"),
-                          actions: [
-                            TextButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                                Navigator.popUntil(
-                                  context,
-                                  (route) => route.isFirst,
-                                );
-                              },
-                              child: const Text("OK"),
-                            ),
-                          ],
-                        ),
-                      );
-                    } catch (e) {
-                      ScaffoldMessenger.of(
-                        context,
-                      ).showSnackBar(SnackBar(content: Text(e.toString())));
-                    }
-                  },
+                            showDialog(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                title: const Text("Success"),
+                                content: const Text(
+                                  "Order placed successfully!",
+                                ),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                      Navigator.popUntil(
+                                        context,
+                                        (route) => route.isFirst,
+                                      );
+                                    },
+                                    child: const Text("OK"),
+                                  ),
+                                ],
+                              ),
+                            );
+                          } catch (e) {
+                            setState(() => isLoading = false);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text(e.toString())),
+                            );
+                          }
+                        },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.pink,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-                  child: const Text(
-                    "Place Order",
-                    style: TextStyle(fontSize: 16),
-                  ),
+                  child: isLoading
+                      ? const CircularProgressIndicator(color: Colors.white)
+                      : const Text(
+                          "Place Order",
+                          style: TextStyle(fontSize: 16),
+                        ),
                 ),
               ),
             ],

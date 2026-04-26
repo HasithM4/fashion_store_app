@@ -115,9 +115,20 @@ class _LoginScreenState extends State<LoginScreen> {
                     } catch (e) {
                       if (!context.mounted) return;
 
+                      String message = "Login failed";
+
+                      if (e is FirebaseAuthException) {
+                        if (e.code == 'user-not-found') {
+                          message = "User not found";
+                        }
+                        if (e.code == 'wrong-password') {
+                          message = "Wrong password";
+                        }
+                      }
+
                       ScaffoldMessenger.of(
                         context,
-                      ).showSnackBar(SnackBar(content: Text(e.toString())));
+                      ).showSnackBar(SnackBar(content: Text(message)));
                     }
                   },
                   style: ElevatedButton.styleFrom(

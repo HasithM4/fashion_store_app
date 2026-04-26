@@ -5,7 +5,8 @@ class CartService {
 
   static void addToCart(CartItem item) {
     final index = cartItems.indexWhere(
-      (existingItem) => existingItem.name == item.name,
+      (existingItem) =>
+          existingItem.name == item.name && existingItem.image == item.image,
     );
 
     if (index != -1) {
